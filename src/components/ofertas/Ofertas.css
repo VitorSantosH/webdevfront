@@ -1,0 +1,58 @@
+.ofertas {
+   
+    background-color: #434343;
+    color: rgba(245, 245, 245, 1);
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 2rem;
+
+}
+
+.oferta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem 4rem;
+    width: 475px;
+    max-width: 40vw;
+    line-height: 2.5rem;
+    background-color: rgba(245, 245, 245, 1);
+    color: #434343;
+    font-weight: 500;
+    margin: 1rem;
+    border-radius: 8px;
+    box-sizing: border-box;
+    text-align: left;
+}
+.oferta h2 {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1rem;
+}
+.oferta h2 .redText {
+    font-size: 4rem;
+}
+@media only screen and (max-width: 1150px) {
+    .oferta {
+        max-width: 45vw;
+        padding: 1rem 2.5rem;
+    }
+}
+
+@media only screen and (max-width: 850px) {
+    .oferta {
+        max-width: 90vw;
+        padding: 1rem 1.5rem;
+    }
+}
+
+@media only screen and (max-width: 850px) {
+    .oferta {
+        line-height: 1.5rem;
+    }
+}

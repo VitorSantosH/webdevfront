@@ -1,0 +1,78 @@
+.about {
+    color: #434343;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: row;
+    background-color: rgba(245, 245, 245, 1);
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+.title {
+    margin-bottom: 5rem;
+}
+.aboutMe {
+    display: flex;
+    max-width: 40vw;
+    text-align: left;
+    justify-content: center;
+    align-items: center;
+    line-height: 2rem;
+    flex-wrap: wrap;
+    min-width: 400px;
+}
+
+.aboutMe span {
+    margin: 10px;
+}
+
+#btnContato {
+
+    width: 217px;
+    max-width: 30vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 0;
+    box-sizing: border-box;
+}
+
+#btnContato a {
+    text-decoration: none;
+    color: #434343;
+}
+.skils {
+    display: flex; 
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 40vw;
+
+
+}
+.skils div {
+    background: rgba(153, 153, 153, .2);
+    border-radius: 5px;
+    margin: 10px;
+    padding: 10px;
+   
+}
+
+@media only screen and (max-width: 850px) {
+
+    .skils  {
+        max-width: 80vw;
+    }
+    .aboutMe {
+        max-width: 80vw;
+        margin-bottom: 3rem;
+    }
+}
+
+@media only screen and (max-width: 450px)  {
+    .aboutMe {
+       min-width: 70vw;
+    }
+    .title  h3 {
+        padding: 1rem;
+    }
+}

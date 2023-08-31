@@ -1,0 +1,26 @@
+.inputContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 2rem;
+}
+.inputContainer label {
+    width: 100%;
+    text-align: left;
+    padding-bottom: 10px;
+}
+.btn {
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    background-color: #f1484888;
+    width: 80%;
+}
+
+.btn:active{
+    margin-top: 8px;
+    filter: brightness(2);
+}

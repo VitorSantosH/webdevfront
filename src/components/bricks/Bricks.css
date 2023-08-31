@@ -1,0 +1,116 @@
+.bricks {
+    background-color: #434343;
+    color: rgba(245, 245, 245, 1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    padding: 2rem;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+.redText {
+    color: rgb(237, 53, 53);
+}
+
+.bricks div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 400px;
+    width: 20vw;
+    text-align: start;
+    margin: 20px;
+}
+
+.bricks div h1 {
+    text-align: start;
+}
+
+.bricks div h3 {
+    text-align: start;
+    line-height: 2.5rem;
+}
+
+.setaDupla {
+    display: flex;
+    width: 100%;
+    background-color: #434343;
+    max-height: 70px;
+    padding: 1rem;
+    justify-content: center;
+}
+.setaDupla  img {
+    max-height: 100%;
+    width: 70px;
+}
+
+.bricksRec {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 1rem;
+    justify-content: center;
+    background-color:  rgba(245, 245, 245, 1);
+}
+
+.brick {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    width: 300px;
+    max-width: 25vw;
+    height: 350px;
+    overflow: hidden;
+    padding: 1rem;
+    padding-top: 2rem;
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin: 1rem;
+}
+.bricksContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    padding: 0 3rem;
+}
+.light {
+    background-color: rgba(190, 190, 190, 0.7);
+}
+.brick img {
+    height: 50px;
+    width: auto;
+}
+
+
+
+@media only screen and (max-width: 850px) {
+
+    .bricksRec h1 {
+        font-size: 2rem;
+    }
+    .brick {
+        
+        max-width: 60vw
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .bricks {
+        padding: 4rem 2rem;
+    }
+    .bricks div  {
+        min-width: 90vw;
+    }
+    .bricks div h1 {
+        font-size: 2.5rem !important;
+    }
+    .brick {
+      min-width: 80vw;
+    }
+
+}
