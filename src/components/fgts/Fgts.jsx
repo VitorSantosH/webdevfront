@@ -3,100 +3,68 @@ import Swal from 'sweetalert2';
 import './Fgts.css';
 import NumberFormat from 'react-number-format';
 import connect from '../config/connect.jsx';
+import Tabelas from "./Tabelas";
 
 const Fgts = props => {
 
     const [state, setState] = useState({
-        loginStatus: false,
-        emailvalue: "",
-        password: "",
-        logs: undefined,
-        logsLenght: 0,
-        cpfValue: undefined,
+        cpfValue: 34894164817,
         retornoFgts: undefined,
+        retornoFgtsConst: undefined,
         fgtsError: false,
         fgtsMsg: "",
         retornoComponent: undefined,
-        loadingFgts: false
+        loadingFgts: false,
+        table: undefined
     })
+    const [retornoConst, setRetornoConst] = useState(undefined)
 
     const cpfRegex = /^\d{11}$/;
 
     useEffect(() => {
 
         if (state.loadingFgts == true) {
+
             contructFgtsComponent()
 
         }
 
     }, [state.loadingFgts])
 
-    function changeEmailValue(value) {
-
-        return setState({
-            ...state,
-            emailvalue: value
-        })
-    }
-
-    function changePasswordValue(value) {
-
-        return setState({
-            ...state,
-            password: value
-        })
-    }
-
-    async function logar() {
-
-        const response = await connect.login({ email: state.emailvalue, password: state.password })
-
-        if (response.status != 200) {
-            return Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Erro ao fazer o login',
-
-            })
-        }
-        localStorage.setItem('autorization', response.data.token)
-
-        return setState({
-            ...state,
-            loginStatus: true
-        })
-    }
 
     async function getFgtsStatus() {
 
         const response = await connect.getFgtsStatus(state.cpfValue)
 
-        console.log(response)
-
         if (!response.erro) {
 
 
+            setRetornoConst(response.retorno)
+            sessionStorage.setItem('retonoConst', JSON.stringify(response.retorno))
+
             return setState({
                 ...state,
-              //  cpfValue: "",
+                //  cpfValue: "",
                 retornoFgts: response.retorno,
                 loadingFgts: true
             })
 
         } else {
 
+            const msg = response.msg ? response.msg : response.mensagem
+
             Swal.fire({
                 icon: "error",
                 title: 'Erro',
-                text: response.msg
+                text: msg
             })
 
             return setState({
                 ...state,
-              //  cpfValue: "",
+                //  cpfValue: "",
                 retornoFgts: response.retorno,
                 fgtsError: true,
-                fgtsMsg: response.msg
+                fgtsMsg: msg
             })
         }
 
@@ -104,85 +72,63 @@ const Fgts = props => {
 
     }
 
-    async function getFtgsTable() {
-
-
-       
-
-        const parans = {
-            cpf: state.cpfValue,
-            table: "GOLD" || "GOLD",
-            parcelas: []
-        }
-
-
-        for (let index = 1; index < 12; index++) {
-
-
-            if (state.retornoFgts[`dataRepasse_${index}`]) {
-                let component = {
-
-                    [`dataRepasse_${index}`]: state.retornoFgts[`dataRepasse_${index}`],
-                    [`valor_${index}`]: state.retornoFgts[`valor_${index}`]
-                };
-
-                parans.parcelas.push(component)
-            }
-
-
-
-        }
-
-       const table = await connect.getFtgsTable(parans)
-
-       if(table.permitido != "SIM") {
-        return Swal.fire({
-            icon: "error", 
-            title: "Erro",
-            text: `${table.msg}`
-        })
-       }
-
-    }
 
     function contructFgtsComponent() {
 
         const retornoComponent = []
-
-        const valorTotal = (<div
-            className="log"
-            key={"1548545"}
-        >
-            <div className="data">
-                valor total  {state.retornoFgts[`saldo_total`]}
-            </div>
-
-            <div className="valueFgts">
-                {state.retornoFgts[`data_saldo`]}
-            </div>
+        const constRetorno = JSON.parse(sessionStorage.getItem('retonoConst'))
 
 
-        </div>)
-
-        retornoComponent.push(valorTotal)
-
-        for (let index = 1; index < 12; index++) {
+        for (let index = 1; index < 11; index++) {
 
 
-            let component = (<div
-                className="log"
+            let component = (<tr
+                className="vencimentos"
                 key={index}
             >
-                <div className="data">
+                <td
+                    className="data"
+                >
                     {state.retornoFgts[`dataRepasse_${index}`]}
-                </div>
-
-                <div className="valueFgts">
-                    {state.retornoFgts[`valor_${index}`]}
-                </div>
+                </td>
 
 
-            </div>)
+                <td
+                    className="valueFgts"
+                >
+                    <div> {constRetorno[`valor_${index}`]}</div>
+                </td>
+
+                <td>
+                    {index}
+                </td>
+
+                <td>
+                    <input type="checkbox" name="" id="" defaultChecked={true} />
+                </td>
+
+                <td>
+                    <input
+                        type="number"
+                        value={parseFloat(state.retornoFgts[`valor_${index}`])}
+                        onChange={e => {
+
+                            if (parseFloat(e.target.value) > parseFloat(constRetorno[`valor_${index}`])) {
+                              return 
+                            }
+
+                            let novoDataFgts = state.retornoFgts
+                            novoDataFgts[`valor_${index}`] = parseFloat(e.target.value)
+                            return setState({
+                                ...state,
+                                retornoFgts: novoDataFgts
+                            })
+                        }}
+                    />
+                </td>
+
+
+            </tr>)
 
 
             retornoComponent.push(component)
@@ -200,126 +146,121 @@ const Fgts = props => {
 
 
     return (
-        <div className="constroler">
+        <div className="fgts">
 
             {!state.loginStatus && (
                 <>
+
                     <div className="inputContainer">
 
-                        <h2>Consulta FGTS</h2>
-                        <label htmlFor="cpf">
-                            CPF
-                        </label>
-                        <button
-                            onClick={e => {
-                                console.log(state)
-                                if (state.retornoFgts) {
-                                    getFtgsTable()
-                                }
-                            }}
-                        >
-                            state
-                        </button>
-                        <NumberFormat
-                            format=" ###.###.###-##"
-                            className='inputTel'
-                            aria-describedby=""
-                            placeholder="000.000.000-00"
-                            value={state.cpfValue || ""}
-                            //  style={{ 'borderColor': stateCadLoja.stateEmailStyle ? '' : '#EE3B3B' }}
-                            onValueChange={(values) => {
-                                const { formattedValue, value } = values;
+                        <section className="pt1">
+                            <h2>Dados do cliente</h2>
+                        </section>
+
+                        <section className="pt2">
+
+                            <div className="cpf">
+                                <label htmlFor="cpf">
+                                    CPF
+                                </label>
+
+                                <NumberFormat
+                                    format=" ###.###.###-##"
+                                    className='inputTel'
+                                    aria-describedby=""
+                                    placeholder="000.000.000-00"
+                                    value={state.cpfValue || ""}
+                                    //  style={{ 'borderColor': stateCadLoja.stateEmailStyle ? '' : '#EE3B3B' }}
+                                    onValueChange={(values) => {
+                                        const { formattedValue, value } = values;
 
 
-                                return setState({
-                                    ...state,
-                                    cpfValue: value
-                                })
+                                        return setState({
+                                            ...state,
+                                            cpfValue: value
+                                        })
 
-                            }}
+                                    }}
 
-                        />
+                                />
+                            </div>
 
-                        <div
+                            <div
 
-                            className="btn"
-                            onClick={e => {
-
-                                if (!cpfRegex.test(state.cpfValue)) {
-
-                                    return Swal.fire({
-                                        icon: "error",
-                                        title: 'Erro',
-                                        text: 'Digite o cpf corretamente',
-                                    })
-
-                                }
+                                className="btn"
+                                onClick={e => {
 
 
 
-                                return getFgtsStatus();
+                                    if (!cpfRegex.test(state.cpfValue)) {
 
-                            }}
+                                        return Swal.fire({
+                                            icon: "error",
+                                            title: 'Erro',
+                                            text: 'Digite o cpf corretamente',
+                                        })
 
-                        >
-                            Consultar
-                        </div>
+                                    }
+
+
+
+                                    return getFgtsStatus();
+
+                                }}
+
+                            >
+                                Consultar
+                            </div>
+                        </section>
 
                     </div>
+
                 </>
             )}
             {state.retornoFgts && (
-                <div className="retorno">
-                    {state.retornoComponent}
-                </div>
-            )}
-            {state.loginStatus && (
-                <div className="login">
-                    <div>
-                        <label htmlFor="email">
-                            E-mail
-                        </label>
-                        <input
-                            name="email"
-                            type="email"
-                            value={state.emailvalue || ""}
-                            onChange={e => {
-                                changeEmailValue(e.target.value)
-                            }}
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="password">
-                            Password
-                        </label>
-                        <input
-                            name="password"
-                            type="password"
-                            value={state.password || ""}
-                            onChange={e => {
-                                changePasswordValue(e.target.value)
-                            }}
-                        />
-                    </div>
+                <>
+                    <div className="containerResults">
+                        <h3>Dados da simulação</h3>
+                        <div className="dadosSimulacao">
+                            <div className="containerDados">
+                                <div className="valor">
+                                    <div className="dataSaldo">
+                                        {state.retornoFgts[`data_saldo`]}
+                                    </div>
+                                    <div>
+                                        <h3>  R${state.retornoFgts.saldo_total}</h3>
+                                    </div>
+                                    <span>
+                                        Valor disponivel de saldo FGTS
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="valueParcelas">
 
-                    <div
-                        className="btn"
-                        onClick={e => {
-                            if (!state.emailvalue || !state.password) {
-                                return Swal.fire({
-                                    icon: 'error',
-                                    title: 'Oops...',
-                                    text: 'DIGITE OS DADOS PARA EFETUAR O LOGIN LOGIN',
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Vencimentos</th>
+                                            <th>Saques Disponíveis</th>
+                                            <th>Nº</th>
+                                            <th>Período</th>
+                                            <th>Valor Antecipação</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                {state.retornoComponent}
 
-                                })
-                            }
-                            return logar()
-                        }}
-                    >
-                        Login
+                            </div>
+
+
+
+                        </div>
+
+                        <Tabelas state={state} />
                     </div>
-                </div>
+                </>
             )}
+
         </div>
     )
 }
